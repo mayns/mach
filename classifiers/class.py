@@ -27,10 +27,10 @@ def entropy(items):
         e += - p * math.log(p)
     return e
 
-print entropy(zoo)
+# print entropy(zoo)
 mammals = [i for i in zoo if i[17] == u'1']
-print mammals
-print entropy(mammals)
+# print mammals
+# print entropy(mammals)
 
 # ENTROPY MAX VALUE
 
@@ -47,7 +47,23 @@ def information_gain(items, i):
         gain -= p*e
     return gain
 
+nodes = []
 for i in xrange(1, 17):
-    print i, information_gain(zoo, i)
+    nodes.append((i, information_gain(zoo, i)))
+nodes = sorted(nodes, key=lambda x: x[1], reverse=1)
+print nodes
 
 # DECISION TREE - построить дерево и проверить насколько хорошо получилось (данные поделить на две части)
+classes = {}
+tree = []
+predicates = []
+
+
+def decision_tree(vectors, i):
+    classes[i] = {}
+    es = entropy(vectors)
+    if es == 0:
+        classes[i] = dict(vectors[17])
+        tree.append(classes)
+        return tree
+    else:
