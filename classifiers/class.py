@@ -11,8 +11,6 @@ with open(u'zoo.data.txt', u'r') as f:
         assert len(h) == 18
         zoo.append(h)
 
-# print zoo
-
 
 def entropy(items):
     labels = {}
@@ -27,10 +25,7 @@ def entropy(items):
         e += - p * math.log(p)
     return e
 
-# print entropy(zoo)
 mammals = [i for i in zoo if i[17] == u'1']
-# print mammals
-# print entropy(mammals)
 
 # ENTROPY MAX VALUE
 
@@ -46,12 +41,6 @@ def information_gain(items, i):
         e = entropy(group)
         gain -= p*e
     return gain, groups
-
-# nodes = []
-# for i in xrange(1, 17):
-#     nodes.append((i, information_gain(zoo, i)))
-# nodes = sorted(nodes, key=lambda x: x[1], reverse=1)
-# print nodes
 
 # ----------------- CLASS WORK -------------------- #
 
