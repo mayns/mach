@@ -155,7 +155,7 @@ for i in zoo[80:]:
     l = tree.guess(i)
     print u'%s %s (%s)' % (i[0], label_names[int(l)], label_names[int(i[17])])
 
-import random
+# import random
 
 
 # def random_learn(items):
