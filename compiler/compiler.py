@@ -63,11 +63,16 @@ class Neg(object):
 class TokenParser(object):
     def __init__(self, s):
         self.s = s
+        self.curr = None
 
     def next(self):
         """
         returns (type, value)
         """
+        if self.curr:
+            res = self.curr
+            self.curr = None
+            return res
         s = self.s.lstrip()
         if not s:
             res = '', None
@@ -90,11 +95,45 @@ class TokenParser(object):
         self.s = s[n:]
         return res
 
+    def putback(self, t):
+        assert self.curr is None
+        self.curr = t
+
 # print Add(Const(1), Var('x')).run({'x': 4})
 # print TokenParser('x + y + ()').next()
+#
+# m = []
+# p = TokenParser('1234 + -foo')
+# while True:
+#     t = p.next()
+#     if not t[0]:
+#         break
+#     m.append(t)
+#
+# print m
 
-p = TokenParser('1234 + -foo')
-while True:
+
+def parse_expr(p):
+    pass
+
+
+def parse_unit(p):
     t = p.next()
-    if not t[0]:
-        break
+    if t[0] == u'i':
+        return Var(t[1])
+    if t[0] == u'c':
+        return Const(t[1])
+    if t[0] == '(':
+        res = parse_expr(p)
+        assert p.next()[0] == ')'
+        return res
+    assert False
+
+
+def parse_factor(p):
+    t = p.next()
+    if t[0] == '-':
+        res = parse_unit(p)
+        return Neg(res)
+    p.putback(t)
+    return parse_unit(p)
