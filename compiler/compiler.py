@@ -114,7 +114,18 @@ class TokenParser(object):
 
 
 def parse_expr(p):
-    pass
+    res = parse_term(p)
+    while True:
+        t = p.next()
+        if not t[0]:
+            return res
+        if t[0] == '+':
+            res2 = parse_term(p)
+            return Add(res, res2)
+        if t[0] == '-':
+            res2 = parse_term(p)
+            return Sub(res, res2)
+        assert False
 
 
 def parse_unit(p):
@@ -137,3 +148,18 @@ def parse_factor(p):
         return Neg(res)
     p.putback(t)
     return parse_unit(p)
+
+
+def parse_term(p):
+    res = parse_factor(p)
+    while True:
+        t = p.next()
+        if t[0] != '*':
+            p.putback(t)
+            return res
+        res2 = parse_factor(p)
+        res = Mul(res, res2)
+
+p = TokenParser('1+x')
+t = parse_expr(p)
+print t.run({'x': 4})
