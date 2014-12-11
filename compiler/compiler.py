@@ -121,18 +121,21 @@ def parse_expr(p):
             return res
         if t[0] == '+':
             res2 = parse_term(p)
-            return Add(res, res2)
+            res = Add(res, res2)
         if t[0] == '-':
             res2 = parse_term(p)
-            return Sub(res, res2)
-        assert False
+            res = Sub(res, res2)
+        if t[0] == ')':
+            p.putback(t)
+            return res
+    return res
 
 
 def parse_unit(p):
     t = p.next()
-    if t[0] == u'i':
+    if t[0] == 'i':
         return Var(t[1])
-    if t[0] == u'c':
+    if t[0] == 'c':
         return Const(t[1])
     if t[0] == '(':
         res = parse_expr(p)
@@ -159,7 +162,8 @@ def parse_term(p):
             return res
         res2 = parse_factor(p)
         res = Mul(res, res2)
+    return res
 
-p = TokenParser('1+x')
+p = TokenParser('a-b-c*(-4)')
 t = parse_expr(p)
-print t.run({'x': 4})
+print t.run({'c': 4, 'a': 2, 'b': 5})
