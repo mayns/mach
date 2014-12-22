@@ -23,7 +23,7 @@ class MyHandler(BaseHTTPRequestHandler):
             self.end_headers()
             self.wfile.write("""
             <form method=POST style="display: flex; align-items: center; justify-content: center; margin-bottom: 80px;
-            margin-top: 220px; ">
+                  margin-top: 220px; ">
                 <input name="n" type=text style="padding-left: 5px; width: 80%; height: 40px; border-color: #ddd; font-size: 16px;" />
                 <input style="width: 60px; height: 40px; background-color: #{color}; font-family: Sans-Serif;
                     font-size: 22px; color: #fff; border: 0" type=submit value="Go!.." />
@@ -36,8 +36,7 @@ class MyHandler(BaseHTTPRequestHandler):
             q = self.path.replace(u'/exp?q', u'q')
             query = urlparse.parse_qs(q).get(u'q')
             print query
-            url = 'https://ajax.googleapis.com/ajax/services/search/web?v=1.0&q=%s&userip=USERS-IP-ADDRESS' % quote(query[0].encode('utf-8'))
-            # url = 'http://ajax.googleapis.com/ajax/services/search/web?v=1.0&q=%s&rsz=large' % query
+            url = 'https://ajax.googleapis.com/ajax/services/feed/find?v=1.0&q=%s&userip=USERS-IP-ADDRESS&googlehost=google.ru' % quote(query[0].encode('utf-8'))
             search_response = urllib.urlopen(url)
             search_results = search_response.read()
             results = json.loads(search_results)
@@ -50,13 +49,13 @@ class MyHandler(BaseHTTPRequestHandler):
             # d.update(yandex)
             print results
             data = results['responseData']
-            print 'Total results: %s' % data['cursor']['estimatedResultCount']
-            hits = data['results']
+            # print 'Total results: %s' % data['entries']['estimatedResultCount']
+            hits = data['entries']
             print 'Top %d hits:' % len(hits)
             google = dict(
-                google_url=hits[0][u'url'].encode('utf-8'),
-                google_title=hits[0][u'title'].encode('utf-8'),
-                google_content=hits[0][u'content'].encode('utf-8'),
+                google_url=hits[0]['url'].encode('utf-8'),
+                google_title=hits[0]['title'].encode('utf-8'),
+                google_content=hits[0]['contentSnippet'].encode('utf-8'),
             )
             d.update(google)
             self.send_response(200)
